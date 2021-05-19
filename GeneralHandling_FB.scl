@@ -1,0 +1,575 @@
+﻿FUNCTION_BLOCK "GeneralHandling_FB"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' ; }
+VERSION : 0.1
+   VAR 
+      sFP_Reset { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+   END_VAR
+
+   VAR_TEMP 
+      tEmptyRecord : "typeProductData";
+      tTLGA : "typeTLGA";
+      tErrorCode : Int;
+      tFpReset : Bool;
+      tFpCleanDBase : Bool;
+   END_VAR
+
+
+BEGIN
+	REGION Overview reset buttons
+	    #tFpReset :=
+	    "Exchange".reset.CleanCrates
+	    OR "Exchange".reset.FullCrates
+	    OR "Exchange".reset.UsedCrates
+	    OR "Exchange".reset.CartonTransport
+	    AND NOT #sFP_Reset;
+	    
+	    #sFP_Reset := #tFpReset;
+	END_REGION
+	
+	REGION Reset Safety
+	    REGION Safety acknowledge
+	        "safety".ack :=
+	        "Exchange".reset.CleanCrates
+	        OR "Exchange".reset.FullCrates
+	        OR "Exchange".reset.UsedCrates
+	        OR "Exchange".reset.CartonTransport
+	        OR "safety".reset;
+	    END_REGION
+	    
+	    REGION Handling reset 2CSP01
+	        "safety"."2CSP01"."01AZEK1".reset :=
+	        "safety"."2CSP01"."01AZEQ1".reset :=
+	        "safety"."2CSP01"."01AZEQ2".reset :=
+	        "Exchange".reset.CleanCrates
+	        OR "Exchange".reset.FullCrates
+	        OR "Exchange".reset.UsedCrates
+	        OR "Exchange".reset.CartonTransport
+	        OR "safety".reset;
+	    END_REGION
+	    
+	    REGION reset 2PCP02
+	        "safety"."2PCP02"."02AZEK1".reset :=
+	        "safety"."2PCP02"."02AZEQ1".reset :=
+	        "safety"."2PCP02"."02AZEQ2".reset :=
+	        "safety"."2PCP02"."02AZEQ3".reset :=
+	        "safety"."2PCP02"."02AZEQ4".reset :=
+	        "safety"."2PCP02"."02AZEQ5".reset :=
+	        "safety"."2PCP02"."02AZEQ6".reset :=
+	        "safety"."2PCP02"."02AZEQ7".reset :=
+	        "safety"."2PCP02"."AS08Y1".reset :=
+	        "Exchange".reset.CleanCrates
+	        OR "Exchange".reset.FullCrates
+	        OR "Exchange".reset.UsedCrates
+	        OR "Exchange".reset.CartonTransport
+	        OR "safety".reset;
+	    END_REGION
+	    
+	    REGION reset 2PAP03
+	        "safety"."2PAP03"."03BZEK1".reset :=
+	        "safety"."2PAP03"."03BZEQ1.1".reset :=
+	        "safety"."2PAP03"."03BZEQ1.2".reset :=
+	        "safety"."2PAP03"."03BZEQ2.1".reset :=
+	        "Exchange".reset.CleanCrates
+	        OR "Exchange".reset.FullCrates
+	        OR "Exchange".reset.UsedCrates
+	        OR "Exchange".reset.CartonTransport
+	        OR "safety".reset;
+	    END_REGION
+	    
+	    REGION reset 2PAP04  
+	        "safety"."2PAP04"."04BZEK1".reset :=
+	        "safety"."2PAP04"."04BZEQ1.1".reset :=
+	        "safety"."2PAP04"."AS17Y1".reset :=
+	        "safety"."2PAP04"."AS18Y1".reset :=
+	        "Exchange".reset.CleanCrates
+	        OR "Exchange".reset.FullCrates
+	        OR "Exchange".reset.UsedCrates
+	        OR "Exchange".reset.CartonTransport
+	        OR "safety".reset;
+	    END_REGION
+	    
+	    REGION reset 2PAP05
+	        "safety"."2PAP05"."05BZEK1".reset :=
+	        "safety"."2PAP05"."05BZEQ1.1".reset :=
+	        "safety"."2PAP05"."05BZEQ2.1".reset :=
+	        "safety"."2PAP05"."05BZEK1".reset :=
+	        "Exchange".reset.CleanCrates
+	        OR "Exchange".reset.FullCrates
+	        OR "Exchange".reset.UsedCrates
+	        OR "Exchange".reset.CartonTransport
+	        OR "safety".reset;
+	    END_REGION
+	    
+	    REGION reset 2PAP06
+	        "safety"."2PAP06"."06BZEK1".reset :=
+	        "safety"."2PAP06"."06BZEQ1.1".reset :=
+	        "safety"."2PAP06"."06BZEQ1.2".reset :=
+	        "safety"."2PAP06"."06BZEQ2.1".reset :=
+	        "safety"."2PAP06"."AS20Y1".reset :=
+	        "Exchange".reset.CleanCrates
+	        OR "Exchange".reset.FullCrates
+	        OR "Exchange".reset.UsedCrates
+	        OR "Exchange".reset.CartonTransport
+	        OR "safety".reset;
+	    END_REGION
+	    
+	    REGION reset 2PAP07
+	        "safety"."2PAP07"."07BZEK1".reset :=
+	        "safety"."2PAP07"."07BZEQ1.1".reset :=
+	        "safety"."2PAP07"."07BZEQ2.1".reset :=
+	        "Exchange".reset.CleanCrates
+	        OR "Exchange".reset.FullCrates
+	        OR "Exchange".reset.UsedCrates
+	        OR "Exchange".reset.CartonTransport
+	        OR "safety".reset;
+	    END_REGION
+	    
+	    REGION reset 2PAP08
+	        "safety"."2PAP08"."08BZEK1".reset :=
+	        "safety"."2PAP08"."08BZEK2".reset :=
+	        "safety"."2PAP08"."08BZEQ1.1".reset :=
+	        "safety"."2PAP08"."08BZEQ2.1".reset :=
+	        "Exchange".reset.CleanCrates
+	        OR "Exchange".reset.FullCrates
+	        OR "Exchange".reset.UsedCrates
+	        OR "Exchange".reset.CartonTransport
+	        OR "safety".reset;
+	    END_REGION
+	    
+	    REGION reset 2PAP09
+	        "safety"."2PAP09"."09CZEK1".reset :=
+	        "safety"."2PAP09"."09CZEQ1.1".reset :=
+	        "safety"."2PAP09"."09CZEQ2.1".reset :=
+	        "safety"."2PAP09"."09DZEK1".reset :=
+	        "safety"."2PAP09"."09DZEQ1.3".reset :=
+	        "safety"."2PAP09"."09DZEQ2.2".reset :=
+	        "Exchange".reset.CleanCrates
+	        OR "Exchange".reset.FullCrates
+	        OR "Exchange".reset.UsedCrates
+	        OR "Exchange".reset.CartonTransport
+	        OR "safety".reset;
+	       
+	    END_REGION
+	    
+	    REGION reset 2PAP10
+	        "safety"."2PAP10"."10EZEQ1.1".reset:=
+	        "safety"."2PAP10"."10EZEQ2.1".reset :=
+	        "safety"."2PAP10"."10EZEK1".reset :=
+	        "Exchange".reset.CleanCrates
+	        OR "Exchange".reset.FullCrates
+	        OR "Exchange".reset.UsedCrates
+	        OR "Exchange".reset.CartonTransport
+	        OR "safety".reset;
+	    END_REGION
+	    
+	    REGION reset 2TMSP11
+	        "safety"."2TMSP11"."4001EQ1".reset :=
+	        "2TMSP11_INPUTS".BSH0;
+	       
+	    END_REGION
+	END_REGION
+	
+	REGION Failures 24/30 Vdc
+	    IF #tFpReset THEN
+	        "Alarms".act[200] :=    // 24Vdc Fuse or Module faulty: 2CSP01: 8001Z1
+	        "Alarms".act[201] :=    // 24Vdc Fuse or Module faulty: 2PCP02: 8301Z1
+	        "Alarms".act[202] :=    // 24Vdc Fuse or Module faulty: 2PAP03: 8302Z1
+	        "Alarms".act[203] :=    // 24Vdc Fuse or Module faulty: 2PAP04: 8303Z1
+	        "Alarms".act[204] :=    // 24Vdc Fuse or Module faulty: 2PAP05: 8304Z1
+	        "Alarms".act[205] :=    // 24Vdc Fuse or Module faulty: 2PAP06: 8305Z1
+	        "Alarms".act[206] :=    // 24Vdc Fuse or Module faulty: 2PAP07: 8306Z1
+	        "Alarms".act[207] :=    // 24Vdc Fuse or Module faulty: 2PAP08: 8307Z1
+	        "Alarms".act[208] :=    // 24Vdc Fuse or Module faulty: 2PAP09: 8308Z1
+	        "Alarms".act[209] :=    // 24Vdc Fuse or Module faulty: 2PAP10: 8309Z1
+	        FALSE;
+	    END_IF;
+	    
+	    IF NOT "8001Z1" THEN
+	        "Alarms".act[200] := TRUE;  // 24Vdc Fuse or Module faulty: 2CSP01: 8001Z1
+	    END_IF;
+	    
+	    IF NOT "8301Z1" THEN
+	        "Alarms".act[201] := TRUE;  // 24Vdc Fuse or Module faulty: 2PCP02: 8301Z1
+	    END_IF;
+	    
+	    IF NOT "8302Z1" THEN
+	        "Alarms".act[202] := TRUE;  // 24Vdc Fuse or Module faulty: 2PAP03: 8302Z1
+	    END_IF;
+	    
+	    IF NOT "8303Z1" THEN
+	        "Alarms".act[203] := TRUE;  // 24Vdc Fuse or Module faulty: 2PAP04: 8303Z1
+	    END_IF;
+	    
+	    IF NOT "8304Z1" THEN
+	        "Alarms".act[204] := TRUE;  // 24Vdc Fuse or Module faulty: 2PAP05: 8304Z1
+	    END_IF;
+	    
+	    IF NOT "8305Z1" THEN
+	        "Alarms".act[205] := TRUE;  // 24Vdc Fuse or Module faulty: 2PAP06: 8305Z1
+	    END_IF;
+	    
+	    IF NOT "8306Z1" THEN
+	        "Alarms".act[206] := TRUE;  // 24Vdc Fuse or Module faulty: 2PAP07: 8306Z1
+	    END_IF;
+	
+	    IF NOT "8307Z1" THEN
+	        "Alarms".act[207] := TRUE;  // 24Vdc Fuse or Module faulty: 2PAP08: 8307Z1
+	    END_IF;
+	    
+	    IF NOT "8308Z1" THEN
+	        "Alarms".act[208] := TRUE;  // 24Vdc Fuse or Module faulty: 2PAP09: 8308Z1
+	    END_IF;
+	    
+	    IF NOT "8309Z1" THEN
+	        "Alarms".act[209] := TRUE;  // 24Vdc Fuse or Module faulty: 2PAP10: 8309Z1
+	    END_IF;
+	    
+	END_REGION
+	
+	REGION Failures 400Vac
+	    IF #tFpReset THEN
+	        "Alarms".act[215] :=    
+	        "Alarms".act[216] :=
+	        "Alarms".act[217] :=
+	        "Alarms".act[218] :=
+	        "Alarms".act[219] :=
+	        "Alarms".act[220] :=
+	        "Alarms".act[221] :=
+	        "Alarms".act[222] :=
+	        "Alarms".act[223] :=
+	        "Alarms".act[224] :=
+	        "Alarms".act[225] :=
+	        "Alarms".act[226] :=
+	        "Alarms".act[227] :=
+	        "Alarms".act[228] :=
+	        "Alarms".act[229] :=
+	        "Alarms".act[230] :=
+	        "Alarms".act[231] :=
+	        "Alarms".act[232] :=
+	        "Alarms".act[233] :=
+	        "Alarms".act[234] :=
+	        "Alarms".act[235] :=
+	        "Alarms".act[236] :=
+	        "Alarms".act[237] :=
+	        "Alarms".act[238] :=
+	        "Alarms".act[239] :=
+	        "Alarms".act[240] :=
+	        "Alarms".act[241] :=
+	        "Alarms".act[242] :=
+	        "Alarms".act[243] :=
+	        "Alarms".act[244] :=
+	        "Alarms".act[245] :=
+	        "Alarms".act[246] :=
+	        "Alarms".act[247] :=
+	        "Alarms".act[248] :=
+	        FALSE;
+	    END_IF;
+	    
+	    IF NOT "8307F1" THEN
+	        "Alarms".act[215] := TRUE;  // 400V Power supply failure: Metal Detector 1: 8307F1
+	    END_IF;
+	    
+	    IF NOT "8307F2" THEN
+	        "Alarms".act[216] := TRUE;  // 400V Power supply failure: Metal Detector 2: 8307F2
+	    END_IF;
+	    
+	    IF NOT "8307F3" THEN
+	        "Alarms".act[217] := TRUE;  // 400V Power supply failure: Metal Detector 3: 8307F3
+	    END_IF;
+	    
+	    IF NOT "8307F4" THEN
+	        "Alarms".act[218] := TRUE;  // 400V Power supply failure: Strapper 1: 8307F4
+	    END_IF;
+	    
+	    IF NOT "8307F5" THEN
+	        "Alarms".act[219] := TRUE;  // 400V Power supply failure: Strapper 2: 8307F5
+	    END_IF;
+	    
+	    IF NOT "8307F6" THEN
+	        "Alarms".act[220] := TRUE;  // 400V Power supply failure: Strapper 3: 8307F6
+	    END_IF;
+	    
+	    IF NOT "03BZF1.1" THEN
+	        "Alarms".act[221] := TRUE;  // 400V Power supply failure: ASi 2.3SPY1.1 - 2PAP03
+	    END_IF;
+	    
+	    IF NOT "03BZF1.2" THEN
+	        "Alarms".act[222] := TRUE;  // 400V Power supply failure: ASi 2.3SPY1.2 - 2PAP03
+	    END_IF;
+	    
+	    IF NOT "03BZF2.1" THEN
+	        "Alarms".act[223] := TRUE;  // 400V Power supply failure: ASi 2.3SPY2.1 - 2PAP03
+	    END_IF;
+	    
+	    IF NOT "03F10" THEN
+	        "Alarms".act[224] := TRUE;  // 400V ASi Power supply failure: 03F10 - 2PAP03
+	    END_IF;
+	    
+	    IF NOT "04BZF1.1" THEN
+	        "Alarms".act[225] := TRUE;  // 400V Power supply failure: ASi 2.4SPY1.1 - 2PAP04
+	    END_IF;
+	    
+	    IF NOT "04F10" THEN
+	        "Alarms".act[226] := TRUE;  // 400V ASi Power supply failure: 04F10 - 2PAP04
+	    END_IF;
+	    
+	    IF NOT "05BZF1.1" THEN
+	        "Alarms".act[227] := TRUE;  // 400V Power supply failure: ASi 2.5SPY1.1 - 2PAP05
+	    END_IF;
+	    
+	    IF NOT "05BZF2.1" THEN
+	        "Alarms".act[228] := TRUE;  // 400V Power supply failure: ASi 2.5SPY2.1 - 2PAP05
+	    END_IF;
+	    
+	    IF NOT "05F10" THEN
+	        "Alarms".act[229] := TRUE;  // 400V ASi Power supply failure: 05F10 - 2PAP05
+	    END_IF;
+	    
+	    IF NOT "06BZF1.1" THEN
+	        "Alarms".act[230] := TRUE;  // 400V Power supply failure: ASi 2.6SPY1.1 - 2PAP06
+	    END_IF;
+	    
+	    IF NOT "06BZF1.2" THEN
+	        "Alarms".act[231] := TRUE;  // 400V Power supply failure: ASi 2.6SPY1.2 - 2PAP06
+	    END_IF;
+	    
+	    IF NOT "06BZF2.1" THEN
+	        "Alarms".act[232] := TRUE;  // 400V Power supply failure: ASi 2.6SPY2.1 - 2PAP06
+	    END_IF;
+	    
+	    IF NOT "06F10" THEN
+	        "Alarms".act[233] := TRUE;  // 400V ASi Power supply failure: 06F10 - 2PAP06
+	    END_IF;
+	    
+	    IF NOT "07BZF1.1" THEN
+	        "Alarms".act[234] := TRUE;  // 400V Power supply failure: ASi 2.7SPY1.1 - 2PAP07
+	    END_IF;
+	    
+	    IF NOT "07BZF2.1" THEN
+	        "Alarms".act[235] := TRUE;  // 400V Power supply failure: ASi 2.7SPY2.1 - 2PAP07
+	    END_IF;
+	    
+	    IF NOT "07F10" THEN
+	        "Alarms".act[236] := TRUE;  // 400V ASi Power supply failure: 07F10 - 2PAP07
+	    END_IF;
+	    
+	    IF NOT "08BZF1.1" THEN
+	        "Alarms".act[237] := TRUE;  // 400V Power supply failure: ASi 2.8SPY1.1 - 2PAP08
+	    END_IF;
+	    
+	    IF NOT "08BZF2.1" THEN
+	        "Alarms".act[238] := TRUE;  // 400V Power supply failure: ASi 2.8SPY2.1 - 2PAP08
+	    END_IF;
+	    
+	    IF NOT "08F10" THEN
+	        "Alarms".act[239] := TRUE;  // 400V ASi Power supply failure: 08F10 - 2PAP08
+	    END_IF;
+	    
+	    IF NOT "09CZF1.1" THEN
+	        "Alarms".act[240] := TRUE;  // 400V Power supply failure: ASi 2.9SPY1.1 - 2PAP09
+	    END_IF;
+	    
+	    IF NOT "09CZF2.1" THEN
+	        "Alarms".act[241] := TRUE;  // 400V Power supply failure: ASi 2.9SPY2.1 - 2PAP09
+	    END_IF;
+	    
+	    IF NOT "09DZF1.3" THEN
+	        "Alarms".act[242] := TRUE;  // 400V Power supply failure: ASi 2.9SPY1.3 - 2PAP09
+	    END_IF;
+	    
+	    IF NOT "09DZF2.2" THEN
+	        "Alarms".act[243] := TRUE;  // 400V Power supply failure: ASi 2.9SPY2.2 - 2PAP09
+	    END_IF;
+	    
+	    IF NOT "09F10" THEN
+	        "Alarms".act[244] := TRUE;  // 400V ASi Power supply failure: 09F10 - 2PAP09
+	    END_IF;
+	    
+	    IF NOT "10EZF1.1" THEN
+	        "Alarms".act[245] := TRUE;  // 400V Power supply failure: ASi 2.10SPY1.1 - 2PAP10
+	    END_IF;
+	    
+	    IF NOT "10EZF2.1" THEN
+	        "Alarms".act[246] := TRUE;  // 400V Power supply failure: ASi 2.10SPY2.1 - 2PAP10
+	    END_IF;
+	    
+	    IF NOT "10F10" THEN
+	        "Alarms".act[247] := TRUE;  // 400V ASi Power supply failure: 10F10 - 2PAP10
+	    END_IF;
+	END_REGION
+	
+	REGION B+W ASi Master errors
+	    "Alarms".act[250] :=    // Further Processing Area: AS-i module error: 2PAP03: 2.3PAP1
+	    "2.3PAP1cfg"        // B+W ASi Config Error
+	    OR "2.3PAP1apf"     // B+W ASi Power Failure
+	    OR "2.3PAP1po"      // B+W ASi Periphery Fault
+	    OR "2.3PAP1ca";     // B+W Configuration Mode active
+	    
+	    "Alarms".act[251] :=    // Further Processing Area: AS-i module error: 2PAP03: 2.3PAP2
+	    "2.3PAP2cfg"        // B+W ASi Config Error
+	    OR "2.3PAP2apf"     // B+W ASi Power Failure
+	    OR "2.3PAP2po"      // B+W ASi Periphery Fault
+	    OR "2.3PAP2ca";     // B+W Configuration Mode active
+	    
+	    "Alarms".act[252] :=    // Further Processing Area: AS-i module error: 2PAP04: 2.4PAP1
+	    "2.4PAP1cfg"        // B+W ASi Config Error
+	    OR "2.4PAP1apf"     // B+W ASi Power Failure
+	    OR "2.4PAP1po"      // B+W ASi Periphery Fault
+	    OR "2.4PAP1ca";     // B+W Configuration Mode active
+	    
+	    "Alarms".act[253] :=    // Further Processing Area: AS-i module error: 2PAP04: 2.4PAP2
+	    "2.4PAP2cfg"        // B+W ASi Config Error
+	    OR "2.4PAP2apf"     // B+W ASi Power Failure
+	    OR "2.4PAP2po"      // B+W ASi Periphery Fault
+	    OR "2.4PAP2ca";     // B+W Configuration Mode active
+	    
+	    "Alarms".act[254] :=    // Further Processing Area: AS-i module error: 2PAP05: 2.5PAP1
+	    "2.5PAP1cfg"        // B+W ASi Config Error
+	    OR "2.5PAP1apf"     // B+W ASi Power Failure
+	    OR "2.5PAP1po"      // B+W ASi Periphery Fault
+	    OR "2.5PAP1ca";     // B+W Configuration Mode active
+	    
+	    "Alarms".act[255] :=    // Further Processing Area: AS-i module error: 2PAP05: 2.5PAP2
+	    "2.5PAP2cfg"        // B+W ASi Config Error
+	    OR "2.5PAP2apf"     // B+W ASi Power Failure
+	    OR "2.5PAP2po"      // B+W ASi Periphery Fault
+	    OR "2.5PAP2ca";     // B+W Configuration Mode active
+	    
+	    "Alarms".act[256] :=    // Further Processing Area: AS-i module error: 2PAP06: 2.6PAP1
+	    "safety"."2PAP06"."06BZEQ1.1".eStopOk AND
+	    ("2.6PAP1cfg"        // B+W ASi Config Error
+	    OR "2.6PAP1apf"     // B+W ASi Power Failure
+	    OR "2.6PAP1po"      // B+W ASi Periphery Fault
+	    OR "2.6PAP1ca");     // B+W Configuration Mode active
+	    
+	    "Alarms".act[257] :=    // Further Processing Area: AS-i module error: 2PAP06: 2.6PAP2
+	    "2.6PAP2cfg"        // B+W ASi Config Error
+	    OR "2.6PAP2apf"     // B+W ASi Power Failure
+	    OR "2.6PAP2po"      // B+W ASi Periphery Fault
+	    OR "2.6PAP2ca";     // B+W Configuration Mode active
+	    
+	    "Alarms".act[258] :=    // Further Processing Area: AS-i module error: 2PAP07: 2.7PAP1
+	    "2.7PAP1cfg"        // B+W ASi Config Error
+	    OR "2.7PAP1apf"     // B+W ASi Power Failure
+	    OR "2.7PAP1po"      // B+W ASi Periphery Fault
+	    OR "2.7PAP1ca";     // B+W Configuration Mode active
+	    
+	    "Alarms".act[259] :=    // Further Processing Area: AS-i module error: 2PAP07: 2.7PAP2
+	    "2.7PAP2cfg"        // B+W ASi Config Error
+	    OR "2.7PAP2apf"     // B+W ASi Power Failure
+	    OR "2.7PAP2po"      // B+W ASi Periphery Fault
+	    OR "2.7PAP2ca";     // B+W Configuration Mode active
+	    
+	    "Alarms".act[260] :=    // Further Processing Area: AS-i module error: 2PAP08: 2.8PAP1
+	    "safety"."2PAP08"."08BZEQ1.1".eStopOk AND
+	    ("2.8PAP1cfg"        // B+W ASi Config Error
+	    OR "2.8PAP1apf"     // B+W ASi Power Failure
+	    OR "2.8PAP1po"      // B+W ASi Periphery Fault
+	    OR "2.8PAP1ca");     // B+W Configuration Mode active
+	    
+	    "Alarms".act[261] :=    // Further Processing Area: AS-i module error: 2PAP08: 2.8PAP2
+	    "safety"."2PAP08"."08BZEQ2.1".eStopOk AND
+	    ("2.8PAP2cfg"        // B+W ASi Config Error
+	    OR "2.8PAP2apf"     // B+W ASi Power Failure
+	    OR "2.8PAP2po"      // B+W ASi Periphery Fault
+	    OR "2.8PAP2ca");     // B+W Configuration Mode active
+	    
+	    "Alarms".act[262] :=    // DMM Area: AS-i module error: 2PAP09: 2.9PAP1
+	    "2.9PAP1cfg"        // B+W ASi Config Error
+	    OR "2.9PAP1apf"     // B+W ASi Power Failure
+	    OR "2.9PAP1po"      // B+W ASi Periphery Fault
+	    OR "2.9PAP1ca";     // B+W Configuration Mode active
+	    
+	    "Alarms".act[263] :=    // DMM Area: AS-i module error: 2PAP09: 2.9PAP2
+	    "2.9PAP2cfg"        // B+W ASi Config Error
+	    OR "2.9PAP2apf"     // B+W ASi Power Failure
+	    OR "2.9PAP2po"      // B+W ASi Periphery Fault
+	    OR "2.9PAP2ca";     // B+W Configuration Mode active
+	    
+	    "Alarms".act[264] :=    // CrateWasher Area: AS-i module error: 2PAP10: 2.10PAP1
+	    "2.10PAP1cfg"        // B+W ASi Config Error
+	    OR "2.10PAP1apf"     // B+W ASi Power Failure
+	    OR "2.10PAP1po"      // B+W ASi Periphery Fault
+	    OR "2.10PAP1ca";     // B+W Configuration Mode active
+	    
+	    "Alarms".act[265] :=    // CrateWasher Area: AS-i module error: 2PAP10: 2.10PAP2
+	    "2.10PAP2cfg"        // B+W ASi Config Error
+	    OR "2.10PAP2apf"     // B+W ASi Power Failure
+	    OR "2.10PAP2po"      // B+W ASi Periphery Fault
+	    OR "2.10PAP2ca";     // B+W Configuration Mode active
+	END_REGION
+	
+	REGION Horn
+	    REGION Cutting & Deboning
+	        "6001.011HH1" :=    // Clean Crates - Middle Lines
+	        "6002.045HH1" :=    // Clean Crates - Belly Lines
+	        "6011.042HH1" :=    // Used Crates - From extern
+	        ("Exchange".horn.FullCrates."FromC&D"
+	        OR "Exchange".horn.FullCrates.IdPoints
+	        OR "Exchange".horn.EmptyCrates.BellyLines
+	        OR "Exchange".horn.EmptyCrates.MiddleLines
+	        OR "Exchange".horn.CartonTransport."FromC&D"
+	        );
+	    END_REGION
+	    
+	    REGION Crates into Dolavs / Repack Area / TrayMover
+	        "6111.042HH1" :=
+	        "6111.121HH1" :=
+	        "Exchange".horn.FullCrates.FromExtern
+	        OR "Exchange".horn.FullCrates.ToRepack
+	        OR "Exchange".horn.FullCrates.DolavTippers
+	        OR "Exchange".horn.FullCrates.ToDolavTippers_1_2
+	        OR "Exchange".horn.FullCrates.ToDolavTippers_3_4
+	        OR "Exchange".horn.FullCrates.TrayMoverArea
+	        OR "Exchange".horn.UsedCrates.ToCrateWasher
+	        OR "Exchange".horn.UsedCrates.FromDolavTippers
+	        OR "Exchange".horn.UsedCrates.FromTraymoverArea
+	        OR "Exchange".horn.UsedCrates.FromRepack
+	        OR "Exchange".horn.UsedCrates.FromExcisting
+	        OR "Exchange".horn.CartonTransport."FromC&D";
+	    END_REGION
+	    
+	    REGION Bone Containers
+	        "6113.183HH1" := 
+	        "Exchange".horn.FullCrates.DMM_BoneContainer
+	        OR "Exchange".horn.UsedCrates.BoneContainer_DMM_Area;
+	    END_REGION
+	    
+	    REGION DMM Area
+	        "6113.263HH1" :=
+	        "Exchange".horn.FullCrates.DMM_BoneContainer
+	        OR "Exchange".horn.UsedCrates.BoneContainer_DMM_Area;
+	    END_REGION
+	    
+	    REGION CrateWasher Area
+	        "6501.011HH1" :=
+	        "Exchange".horn.EmptyCrates.BellyLines OR "Exchange".horn.EmptyCrates.MiddleLines OR "Exchange".horn.UsedCrates.CrateWasher;
+	    END_REGION
+	END_REGION
+	
+	REGION Clean-up DataBase
+	  IF "Common".signals.FpRAO // Flank pulse Reset All Overrides
+	  THEN
+	    #tTLGA.location := 9999;  // Location Cleanup Database
+	    #tTLGA.ident.dig_01_08 := 0;
+	    #tTLGA.ident.dig_09_16 := 0;
+	    #tTLGA.ident.dig_17_24 := 0;
+	    #tTLGA.ident.dig_25_32 := 0;
+	    #tTLGA.orderNr := 0;
+	    #tTLGA.status := "CrateData".nrOfRecords;
+	    #tTLGA.tnr := 0;
+	    #tTLGA.destination := 0;
+	    
+	    "FiFoWrite"(iFiFoData    := #tTLGA,
+	                oErrorCode   => #tErrorCode,
+	                xNrOfRecords := "CommDB".telegrams_LG.send.TLGA_Fifo.nrOfRecords,
+	                xRecordArray := "CommDB".telegrams_LG.send.TLGA_Fifo.record);
+	    
+	    
+	    "RecordsDeleteAll"(iEmptyRecord := #tEmptyRecord,
+	                       oErrorCode   => #tErrorCode,
+	                       xRecordArray := "CrateData".product);
+	  END_IF;
+	END_REGION
+END_FUNCTION_BLOCK
+
