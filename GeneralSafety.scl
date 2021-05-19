@@ -1,0 +1,254 @@
+﻿FUNCTION_BLOCK "GeneralSafety"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' ; }
+VERSION : 0.1
+
+BEGIN
+	REGION Fire Alarm
+	    "safety"."2CSP01".FireAlarm := "FireAlarm";
+	    "I-Device_CSP01-Outp-30" := "FireAlarm";
+	END_REGION
+	
+	REGION E-stop buttons
+	    "Alarms".act[20] := NOT "safety".Communication."1CSP01".Receive.ES_ZoneAZ;
+	    
+	    "Alarms".act[25] := NOT "safety".Buttons."2ES0301";
+	    "Alarms".act[26] := NOT "safety".Buttons."2ES0302";
+	    "Alarms".act[27] := NOT "safety".Buttons."2ES0303";
+	    
+	    "Alarms".act[30] := NOT "safety".Buttons."2ES0401";
+	    "Alarms".act[31] := NOT "safety".Buttons."2ES0402";
+	    "Alarms".act[32] := NOT "safety".Buttons."2ES0403";
+	    "Alarms".act[33] := NOT "safety".Buttons."2ES0404";
+	    
+	    "Alarms".act[35] := NOT "safety".Buttons."2ES0701";
+	    "Alarms".act[36] := NOT "safety".Buttons."2ES0702";
+	    "Alarms".act[37] := NOT "safety".Buttons."2ES0703";
+	    "Alarms".act[38] := NOT "safety".Buttons."2ES0704";
+	    
+	    "Alarms".act[40] := NOT "safety".Buttons."2ES0801";
+	    "Alarms".act[41] := NOT "safety".Buttons."2ES0802";
+	    "Alarms".act[42] := NOT "safety".Buttons."2ES0803";
+	    "Alarms".act[43] := NOT "safety".Buttons."2ES0804";
+	    
+	    "Alarms".act[45] := NOT "safety".Buttons."2ES0901";
+	    "Alarms".act[46] := NOT "safety".Buttons."2ES0902";
+	    "Alarms".act[47] := NOT "safety".Buttons."2ES0903";
+	    
+	    "Alarms".act[50] := NOT "safety".Buttons."2ES1001";
+	    "Alarms".act[51] := NOT "safety".Buttons."2ES1002";
+	    "Alarms".act[52] := NOT "safety".Buttons."METAL1ES1";
+	    "Alarms".act[53] := NOT "safety".Buttons."METAL2ES1";
+	    "Alarms".act[54] := NOT "safety".Buttons."METAL3ES1";
+	    "Alarms".act[55] := NOT "safety".Keyswitches."4001_011KS1";
+	END_REGION
+	
+	REGION E-stop Zone AZ - Cutting & Deboning Area
+	    "Alarms".act[60] :=    // Emergency Circuit AZ: Cutting & Deboning Area: Ready for reset
+	    "safety"."2CSP01"."01AZEK1".EstopReadyForReset
+	    OR "safety"."2CSP01"."01AZEQ1".EstopReadyForReset
+	    OR "safety"."2CSP01"."01AZEQ2".EstopReadyForReset
+	    OR "safety"."2PCP02"."02AZEK1".EstopReadyForReset
+	    OR "safety"."2PCP02"."02AZEQ1".EstopReadyForReset
+	    OR "safety"."2PCP02"."02AZEQ2".EstopReadyForReset
+	    OR "safety"."2PCP02"."02AZEQ3".EstopReadyForReset
+	    OR "safety"."2PCP02"."02AZEQ4".EstopReadyForReset
+	    OR "safety"."2PCP02"."02AZEQ5".EstopReadyForReset
+	    OR "safety"."2PCP02"."02AZEQ6".EstopReadyForReset
+	    OR "safety"."2PCP02"."02AZEQ7".EstopReadyForReset
+	    OR "safety"."2PCP02".AS08Y1.EstopReadyForReset;
+	    
+	    "Alarms".act[120] := "safety"."2CSP01"."01AZEK1".EstopFeedbackError;    // EC-AZ: 2CSP01: 01AZEK1: Feedback error
+	    "Alarms".act[121] := "safety"."2CSP01"."01AZEQ1".EstopFeedbackError;    // EC-AZ: 2CSP01: 01AZEQ1: Feedback error
+	    "Alarms".act[122] := "safety"."2CSP01"."01AZEQ2".EstopFeedbackError;    // EC-AZ: 2CSP01: 01AZEQ2: Feedback error
+	    "Alarms".act[123] := "safety"."2PCP02"."02AZEK1".EstopFeedbackError;    // EC-AZ: 2CSP01: 02AZEK1: Feedback error
+	    "Alarms".act[124] := "safety"."2PCP02"."02AZEQ1".EstopFeedbackError;    // EC-AZ: 2CSP01: 02AZEQ1: Feedback error
+	    "Alarms".act[125] := "safety"."2PCP02"."02AZEQ2".EstopFeedbackError;    // EC-AZ: 2CSP01: 02AZEQ2: Feedback error
+	    "Alarms".act[126] := "safety"."2PCP02"."02AZEQ3".EstopFeedbackError;    // EC-AZ: 2CSP01: 02AZEQ3: Feedback error
+	    "Alarms".act[127] := "safety"."2PCP02"."02AZEQ4".EstopFeedbackError;    // EC-AZ: 2CSP01: 02AZEQ4: Feedback error
+	    "Alarms".act[128] := "safety"."2PCP02"."02AZEQ5".EstopFeedbackError;    // EC-AZ: 2CSP01: 02AZEQ5: Feedback error
+	    "Alarms".act[129] := "safety"."2PCP02"."02AZEQ6".EstopFeedbackError;    // EC-AZ: 2CSP01: 02AZEQ6: Feedback error
+	    "Alarms".act[130] := "safety"."2PCP02"."02AZEQ7".EstopFeedbackError;    // EC-AZ: 2CSP01: 02AZEQ7: Feedback error
+	    "Alarms".act[131] := "safety"."2PCP02".AS08Y1.EstopFeedbackError;       // EC-AZ: 2CSP01: AS08Y1: Feedback error
+	END_REGION
+	
+	REGION E-Stop Zone BZ - Further Processing Area
+	    "Alarms".act[61] :=    // Emergency Circuit BZ: Further Processing Area: Ready for reset
+	    "safety"."2PAP03"."03BZEQ1.1".EstopReadyForReset
+	    OR "safety"."2PAP03"."03BZEQ1.2".EstopReadyForReset
+	    OR "safety"."2PAP03"."03BZEQ2.1".EstopReadyForReset
+	    OR "safety"."2PAP03"."03BZEK1".EstopReadyForReset
+	    
+	    OR "safety"."2PAP04"."04BZEQ1.1".EstopReadyForReset
+	    OR "safety"."2PAP04".AS17Y1.EstopReadyForReset
+	    OR "safety"."2PAP04".AS18Y1.EstopReadyForReset
+	    OR "safety"."2PAP04"."04BZEK1".EstopReadyForReset
+	    
+	    OR "safety"."2PAP05"."05BZEQ1.1".EstopReadyForReset
+	    OR "safety"."2PAP05"."05BZEQ2.1".EstopReadyForReset
+	    OR "safety"."2PAP05"."05BZEK1".EstopReadyForReset
+	    
+	    OR "safety"."2PAP06"."06BZEQ1.1".EstopReadyForReset
+	    OR "safety"."2PAP06"."06BZEQ1.2".EstopReadyForReset
+	    OR "safety"."2PAP06"."06BZEQ2.1".EstopReadyForReset
+	    OR "safety"."2PAP06".AS20Y1.EstopReadyForReset
+	    
+	    OR "safety"."2PAP06"."06BZEK1".EstopReadyForReset
+	    
+	    OR "safety"."2PAP07"."07BZEQ1.1".EstopReadyForReset
+	    OR "safety"."2PAP07"."07BZEQ2.1".EstopReadyForReset
+	    OR "safety"."2PAP07"."07BZEK1".EstopReadyForReset
+	    
+	    OR "safety"."2PAP08"."08BZEQ1.1".EstopReadyForReset
+	    OR "safety"."2PAP08"."08BZEQ2.1".EstopReadyForReset
+	    
+	    OR "safety"."2PAP08"."08BZEK1".EstopReadyForReset
+	    OR "safety"."2PAP08"."08BZEK2".EstopReadyForReset;
+	    
+	    "Alarms".act[140] := "safety"."2PAP03"."03BZEQ1.1".EstopFeedbackError;  // EC-BZ: 2PAP03: 03BZEQ1.1: Feedback error
+	    "Alarms".act[141] := "safety"."2PAP03"."03BZEQ1.2".EstopFeedbackError;  // EC-BZ: 2PAP03: 03BZEQ1.2: Feedback error
+	    "Alarms".act[142] := "safety"."2PAP03"."03BZEQ2.1".EstopFeedbackError;  // EC-BZ: 2PAP03: 03BZEQ2.1: Feedback error
+	    "Alarms".act[143] := "safety"."2PAP03"."03BZEK1".EstopFeedbackError;    // EC-BZ: 2PAP03: 03BZEK1: Feedback error
+	    
+	    "Alarms".act[144] := "safety"."2PAP04"."04BZEQ1.1".EstopFeedbackError;  // EC-BZ: 2PAP04: 04BZEQ1.1: Feedback error
+	    "Alarms".act[145] := "safety"."2PAP04".AS17Y1.EstopFeedbackError;       // EC-BZ: 2PAP04: AS17Y1: Feedback error
+	    "Alarms".act[146] := "safety"."2PAP04".AS18Y1.EstopFeedbackError;       // EC-BZ: 2PAP04: AS18Y1: Feedback error
+	    "Alarms".act[147] := "safety"."2PAP04"."04BZEK1".EstopFeedbackError;    // EC-BZ: 2PAP04: 04BZEK1: Feedback error
+	    
+	    "Alarms".act[148] := "safety"."2PAP05"."05BZEQ1.1".EstopFeedbackError;  // EC-BZ: 2PAP05: 05BZEQ1.1: Feedback error
+	    "Alarms".act[149] := "safety"."2PAP05"."05BZEQ2.1".EstopFeedbackError;  // EC-BZ: 2PAP05: 05BZEQ2.1: Feedback error
+	    "Alarms".act[150] := "safety"."2PAP05"."05BZEK1".EstopFeedbackError;    // EC-BZ: 2PAP05: 05BZEK1: Feedback error
+	    
+	    "Alarms".act[151] := "safety"."2PAP06"."06BZEQ1.1".EstopFeedbackError;  // EC-BZ: 2PAP06: 06BZEQ1.1: Feedback error
+	    "Alarms".act[152] := "safety"."2PAP06"."06BZEQ1.2".EstopFeedbackError;  // EC-BZ: 2PAP06: 06BZEQ1.2: Feedback error
+	    "Alarms".act[153] := "safety"."2PAP06"."06BZEQ2.1".EstopFeedbackError;  // EC-BZ: 2PAP06: 06BZEQ2.1: Feedback error
+	    "Alarms".act[154] := "safety"."2PAP06".AS20Y1.EstopFeedbackError;       // EC-BZ: 2PAP06: AS20Y1: Feedback error
+	    "Alarms".act[155] := "safety"."2PAP06"."06BZEK1".EstopFeedbackError;    // EC-BZ: 2PAP06: 06BZEK1: Feedback error
+	    
+	    "Alarms".act[156] := "safety"."2PAP07"."07BZEQ1.1".EstopFeedbackError;  // EC-BZ: 2PAP07: 07BZEQ1.1: Feedback error
+	    "Alarms".act[157] := "safety"."2PAP07"."07BZEQ2.1".EstopFeedbackError;  // EC-BZ: 2PAP07: 07BZEQ2.1: Feedback error
+	    "Alarms".act[158] := "safety"."2PAP07"."07BZEK1".EstopFeedbackError;    // EC-BZ: 2PAP07: 07BZEK1: Feedback error
+	    
+	    "Alarms".act[159] := "safety"."2PAP08"."08BZEQ1.1".EstopFeedbackError;  // EC-BZ: 2PAP08: 08BZEQ1.1: Feedback error
+	    "Alarms".act[160] := "safety"."2PAP08"."08BZEQ2.1".EstopFeedbackError;  // EC-BZ: 2PAP08: 08BZEQ2.1: Feedback error
+	    "Alarms".act[161] := "safety"."2PAP08"."08BZEK1".EstopFeedbackError;    // EC-BZ: 2PAP08: 08BZEK1: Feedback error
+	    "Alarms".act[162] := "safety"."2PAP08"."08BZEK2".EstopFeedbackError;    // EC-BZ: 2PAP08: 08BZEK2: Feedback error
+	    
+	    REGION E-Stop Zone BZ1 - TrayMover
+	        "Alarms".act[62] := // Emergency Circuit BZ1: TrayMover: Ready for reset
+	        "safety"."2TMSP11"."4001EQ1".EstopReadyForReset
+	        AND NOT "safety"."2TMSP11"."4001EQ1".EstopFeedbackError;
+	        
+	        "Alarms".act[165] := "safety"."2TMSP11"."4001EQ1".EstopFeedbackError;   // EC-BZ1: 2TMSP11: 4001EQ1: Feedback error
+	    END_REGION
+	END_REGION
+	
+	REGION E-Stop Zone CZ - DMM Area
+	    "Alarms".act[63] :=    // Emergency Circuit CZ: DMM Area: Ready for reset
+	    "safety"."2PAP09"."09CZEQ1.1".EstopReadyForReset
+	    OR "safety"."2PAP09"."09CZEQ2.1".EstopReadyForReset
+	    OR "safety"."2PAP09"."09CZEK1".EstopReadyForReset
+	    AND NOT "safety"."2PAP09"."09CZEQ1.1".EstopFeedbackError
+	    AND NOT "safety"."2PAP09"."09CZEQ2.1".EstopFeedbackError
+	    AND NOT "safety"."2PAP09"."09CZEK1".EstopFeedbackError;
+	    
+	    "Alarms".act[170] := "safety"."2PAP09"."09CZEQ1.1".EstopFeedbackError;  // EC-CZ: 2PAP09: 09CZEQ1.1: Feedback error
+	    "Alarms".act[171] := "safety"."2PAP09"."09CZEQ2.1".EstopFeedbackError;  // EC-CZ: 2PAP09: 09CZEQ2.1: Feedback error
+	    "Alarms".act[172] := "safety"."2PAP09"."09CZEK1".EstopFeedbackError;    // EC-CZ: 2PAP09: 09CZEK1: Feedback error
+	END_REGION
+	
+	REGION E-Stop Zone DZ - Bone Container Area
+	    "Alarms".act[64] :=    // Emergency Circuit DZ: Bone Container Area: Ready for reset
+	    "safety"."2PAP09"."09DZEQ1.3".EstopReadyForReset
+	    OR "safety"."2PAP09"."09DZEQ2.2".EstopReadyForReset
+	    OR "safety"."2PAP09"."09DZEK1".EstopReadyForReset
+	    AND NOT "safety"."2PAP09"."09DZEQ1.3".EstopFeedbackError
+	    AND NOT "safety"."2PAP09"."09DZEQ2.2".EstopFeedbackError
+	    AND NOT "safety"."2PAP09"."09DZEK1".EstopFeedbackError;
+	    
+	    "Alarms".act[180] := "safety"."2PAP09"."09DZEQ1.3".EstopFeedbackError;  // EC-DZ: 2PAP09: 09DZEQ1.3: Feedback error
+	    "Alarms".act[181] := "safety"."2PAP09"."09DZEQ2.2".EstopFeedbackError;  // EC-DZ: 2PAP09: 09DZEQ2.2: Feedback error
+	    "Alarms".act[182] := "safety"."2PAP09"."09DZEK1".EstopFeedbackError;    // EC-DZ: 2PAP09: 09DZEK1: Feedback error
+	END_REGION
+	
+	REGION E-Stop Zone EZ - CrateWasher Area
+	    "Alarms".act[65] :=    // Emergency Circuit EZ: CrateWasher Area: Ready for reset
+	    "safety"."2PAP10"."10EZEQ1.1".EstopReadyForReset
+	    OR "safety"."2PAP10"."10EZEQ2.1".EstopReadyForReset
+	    OR "safety"."2PAP10"."10EZEK1".EstopReadyForReset
+	    AND NOT "safety"."2PAP10"."10EZEQ1.1".EstopFeedbackError
+	    AND NOT "safety"."2PAP10"."10EZEQ2.1".EstopFeedbackError
+	    AND NOT "safety"."2PAP10"."10EZEK1".EstopFeedbackError;
+	    
+	    "Alarms".act[190] := "safety"."2PAP10"."10EZEQ1.1".EstopFeedbackError;  // EC-EZ: 2PAP10: 10EZEQ1.1: Feedback error
+	    "Alarms".act[191] := "safety"."2PAP10"."10EZEQ2.1".EstopFeedbackError;  // EC-EZ: 2PAP10: 10EZEQ2.1: Feedback error
+	    "Alarms".act[192] := "safety"."2PAP10"."10EZEK1".EstopFeedbackError;    // EC-EZ: 2PAP10: 10EZEQ1.1: Feedback error
+	END_REGION
+	
+	REGION Discrepancy error
+	    "Alarms".act[70] :=    // Failure with Safety I/O Module 2CSP01
+	    "safety".QBAD."01AZEK1A+B_QBAD"
+	    OR "safety".QBAD."01AZEQ01A+B+QBAD"
+	    OR "safety".QBAD."01AZEQ02A+B_QBAD";
+	    
+	    "Alarms".act[71] :=     // Failure with Safety I/O Module 2PCP02
+	    "safety".QBAD."02AZEK1A+B_QBAD"
+	    OR "safety".QBAD."02AZEQ01A+B_QBAD"
+	    OR "safety".QBAD."02AZEQ02A+B_QBAD"
+	    OR "safety".QBAD."02AZEQ03A+B_QBAD"
+	    OR "safety".QBAD."02AZEQ04A+B_QBAD"
+	    OR "safety".QBAD."02AZEQ05A+B_QBAD"
+	    OR "safety".QBAD."02AZEQ06A+B_QBAD"
+	    OR "safety".QBAD."02AZEQ07A+B_QBAD";
+	    
+	    "Alarms".act[72] :=     // Failure with Safety I/O Module 2PAP03
+	    "safety".QBAD."03BZEK1A+B_QBAD"
+	    OR "safety".QBAD."03BZEQ1.1A+B_QBAD"
+	    OR "safety".QBAD."03BZEQ1.2A+B_QBAD"
+	    OR "safety".QBAD."03BZEQ2.1A+B_QBAD";
+	    
+	    "Alarms".act[73] :=     // Failure with Safety I/O Module 2PAP04
+	    "safety".QBAD."04BZEK1A+B_QBAD"
+	    OR "safety".QBAD."04BZEQ1.1A+B_QBAD";
+	    
+	    "Alarms".act[74] :=     // Failure with Safety I/O Module 2PAP05
+	    "safety".QBAD."05BZEK1A+B_QBAD"
+	    OR "safety".QBAD."05BZEQ1.1A+B_QBAD"
+	    OR "safety".QBAD."05BZEQ2.1A+B_QBAD";
+	    
+	    "Alarms".act[75] :=     // Failure with Safety I/O Module 2PAP06
+	    "safety".QBAD."06BZEK1A+B_QBAD"
+	    OR "safety".QBAD."06BZEQ1.1A+B_QBAD"
+	    OR "safety".QBAD."06BZEQ1.2A+B_QBAD"
+	    OR "safety".QBAD."06BZEQ2.1A+B_QBAD";
+	    
+	    "Alarms".act[76] :=     // Failure with Safety I/O Module 2PAP07
+	    "safety".QBAD."07BZEK1A+B_QBAD"
+	    OR "safety".QBAD."07BZEQ1.1A+B_QBAD"
+	    OR "safety".QBAD."07BZEQ2.1A+B_QBAD";
+	    
+	    "Alarms".act[77] :=     // Failure with Safety I/O Module 2PAP08
+	    "safety".QBAD."08BZEK1A+B_QBAD"
+	    OR "safety".QBAD."08BZEK2A+B_QBAD"
+	    OR "safety".QBAD."08BZEQ1.1A+B_QBAD"
+	    OR "safety".QBAD."08BZEQ2.1A+B_QBAD";
+	    
+	    "Alarms".act[78] :=     // Failure with Safety I/O Module 2PAP09
+	    "safety".QBAD."09CZEK1A+B_QBAD"
+	    OR "safety".QBAD."09CZEQ1.1A+B_QBAD"
+	    OR "safety".QBAD."09CZEQ2.1A+B_QBAD"
+	    OR "safety".QBAD."09DZEK1A+B_QBAD"
+	    OR "safety".QBAD."09DZEQ1.3A+B_QBAD"
+	    OR "safety".QBAD."09DZEQ2.2A+B_QBAD";
+	    
+	    "Alarms".act[79] :=     // Failure with Safety I/O Module 2PAP10
+	    "safety".QBAD."10EZEK1A+B_QBAD"
+	    OR "safety".QBAD."10EZEQ1.1A+B_QBAD"
+	    OR "safety".QBAD."10EZEQ2.1A+B_QBAD";
+	    
+	    "Alarms".act[80] :=     // Failure with Safety I/O Module 2TMSP11
+	    "safety".QBAD."2TMSP11_4001EQ1A+B_QBAD";
+	END_REGION
+	
+	
+END_FUNCTION_BLOCK
+
